@@ -1,7 +1,7 @@
 # archarchive
 A utility to quickly rollback an arch linux system using ALA (a.k.a Arch Linux Archive).
 
-[video.mp4](video.mp4)
+https://github.com/user-attachments/assets/24ff6cc1-23ab-41a1-8055-e3d8e790b6a9
 
 ## Install
 Just install from AUR, dammit!
