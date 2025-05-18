@@ -15,11 +15,11 @@ archarchive
 ```
 Add the coolest aliases to your shell and express your thoughts properly!
 ```
-alias pizdec=archarchive
-alias suka=archarchive
-alias blyat=archarchive
-alias otkat=archarchive
-alias nazad=archarchive
+alias pizdec="sudo archarchive"
+alias suka="sudo archarchive"
+alias blyat="sudo archarchive"
+alias otkat="sudo archarchive"
+alias nazad="sudo archarchive"
 ```
 <br />
 <br />
