@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow};
 use scraper::{Html, Selector};
 use crate::archarchive::ENDPOINT;
 
@@ -11,7 +11,7 @@ fn get_elements(fragment: &scraper::Html) -> anyhow::Result<Vec<String>> {
 
     for element in fragment.select(&selector) {
         if let Some(href) = element.attr("href") {
-            if href.ends_with('/') && href != '../' {
+            if href.ends_with('/') && href != "../" {
                 let element = href.trim_end_matches('/');
                 if element != ".." {
                     elements.push(element.to_string());
@@ -24,12 +24,13 @@ fn get_elements(fragment: &scraper::Html) -> anyhow::Result<Vec<String>> {
 }
 fn build_url(year: &str, month: Option<&str>, day: Option<&str>) -> String {
     match (month, day) {
-        (Some(m), Some(d)) => format!("{}/{}/{}/", ENDPOINT, year, m, d),
-        (Some(m), None)    => format!("{}/{}/", ENDPOINT, year, m),
-        (None, None)       => format!("{}/", ENDPOINT),
-        _ => unreachable!()
+        (Some(m), Some(d)) => format!("{}/{}/{}/{}", ENDPOINT, year, m, d),
+        (Some(m), None)    => format!("{}/{}/{}", ENDPOINT, year, m),
+        (None, None)       => format!("{}/{}", ENDPOINT, year),
+        (None, Some(_))    => panic!("Cannot specify day without month")
     }
 }
+
 pub async fn parse_years() -> anyhow::Result<Vec<String>> {
     let html: String = reqwest::get(ENDPOINT)
         .await?

@@ -2,7 +2,6 @@ pub mod parser;
 mod menu;
 
 use anyhow::{Result, anyhow};
-use scraper::{Html, Selector};
 
 pub const ENDPOINT: &str = "https://archive.archlinux.org/repos";
 pub struct ArchArchive {
