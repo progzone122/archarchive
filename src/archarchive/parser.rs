@@ -11,9 +11,11 @@ fn get_elements(fragment: &scraper::Html) -> anyhow::Result<Vec<String>> {
 
     for element in fragment.select(&selector) {
         if let Some(href) = element.attr("href") {
-            let element = href[..href.len() - 1].trim();
-            if element != ".." {
-                elements.push(element.to_string());
+            if href.ends_with('/') && href != '../' {
+                let element = href.trim_end_matches('/');
+                if element != ".." {
+                    elements.push(element.to_string());
+                }
             }
         }
     }
