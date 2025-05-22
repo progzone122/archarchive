@@ -12,7 +12,7 @@ pub fn ask<T: Display + Clone>(items: Vec<T>, message: &str) -> T {
         match create_prompt(items.clone(), message) {
             Ok(choice) => return choice,
             Err(err) => {
-                eprintln!("Ошибка: {}. Попробуйте снова или Ctrl+C для выхода.", err);
+                eprintln!("Error: {}. Try again or use Ctrl+C to exit.", err);
             },
         }
     }
