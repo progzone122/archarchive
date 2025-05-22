@@ -21,19 +21,28 @@ impl ArchArchive {
         format!("{}/{}/{}/{}/$repo/os/$arch", ENDPOINT, self.year, self.month, self.day)
     }
     async fn select_date(&mut self) -> Result<()> {
-    let mut years = parser::parse_years().await?;
-    years.reverse();
-    self.year = menu::ask(years, "Select year: ");
-
-    let mut months = parser::parse_months(&self.year).await?;
-    months.reverse();
-    self.month = menu::ask(months, "Select month: ");
-
-    let mut days = parser::parse_days(&self.year, &self.month).await?;
-    days.reverse();
-    self.day = menu::ask(days, "Select day: ");
-
-    Ok(())
+        let mut years = parser::parse_years().await?;
+        years.reverse();
+        if years.is_empty() {
+            return Err(anyhow!("No available years found"));
+        }
+        self.year = menu::ask(years, "Select year: ");
+    
+        let mut months = parser::parse_months(&self.year).await?;
+        months.reverse();
+        if months.is_empty() {
+            return Err(anyhow!("No available months found"));
+        }
+        self.month = menu::ask(months, "Select month: ");
+    
+        let mut days = parser::parse_days(&self.year, &self.month).await?;
+        days.reverse();
+        if days.is_empty() {
+            return Err(anyhow!("No available days found"));
+        }
+        self.day = menu::ask(days, "Select day: ");
+    
+        Ok(())
     }
     pub async fn menu_run(&mut self) -> Result<String> {
         self.select_date().await?;
