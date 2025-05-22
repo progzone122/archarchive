@@ -47,14 +47,22 @@ pub async fn parse_years() -> anyhow::Result<Vec<String>> {
     Ok(years)
 }
 pub async fn parse_months(year: &str) -> anyhow::Result<Vec<String>> {
-    let html: String = reqwest::get(&build_url(year, Some(month), None)).await?.text().await?;
+    let html: String = reqwest::get(&build_url(year, None, None))
+        .await?
+        .text()
+        .await?;
+
     let fragment = Html::parse_fragment(&html);
     let months: Vec<String> = get_elements(&fragment)?;
 
     Ok(months)
 }
 pub async fn parse_days(year: &str, month: &str) -> anyhow::Result<Vec<String>> {
-    let html: String = reqwest::get(&build_url(year, Some(month), Some(day))).await?.text().await?;
+    let html: String = reqwest::get(&build_url(year, Some(month), None))
+        .await?
+        .text()
+        .await?;
+
     let fragment = Html::parse_fragment(&html);
     let days: Vec<String> = get_elements(&fragment)?;
 
