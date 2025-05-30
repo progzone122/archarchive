@@ -1,5 +1,5 @@
 pub mod parser;
-mod menu;
+pub mod menu;
 use crate::archarchive::menu::detect_language;
 use anyhow::{Result, anyhow};
 
