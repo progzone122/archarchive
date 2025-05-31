@@ -8,7 +8,7 @@ fn create_prompt<T: Display + Clone>(items: Vec<T>, message: &str) -> InquireRes
         .prompt()
 }
 
-fn detect_language() -> String {
+pub fn detect_language() -> String {
     let lang = env::var("LC_ALL")
         .or_else(|_| env::var("LANG"))
         .unwrap_or_else(|_| "en".to_string()); // fallback
