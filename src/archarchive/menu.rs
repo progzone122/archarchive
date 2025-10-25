@@ -1,11 +1,10 @@
-use std::fmt::Display;
 use inquire::error::InquireResult;
-use inquire::Select;
-use std::env;
+use inquire::{InquireError, Select};
+use std::fmt::Display;
+use std::{env, process};
 
 fn create_prompt<T: Display + Clone>(items: Vec<T>, message: &str) -> InquireResult<T> {
-    Select::new(message, items)
-        .prompt()
+    Select::new(message, items).prompt()
 }
 
 pub fn detect_language() -> String {
@@ -13,7 +12,13 @@ pub fn detect_language() -> String {
         .or_else(|_| env::var("LANG"))
         .unwrap_or_else(|_| "en".to_string()); // fallback
 
-    lang.split('.').next().unwrap_or("en").split('_').next().unwrap_or("en").to_string()
+    lang.split('.')
+        .next()
+        .unwrap_or("en")
+        .split('_')
+        .next()
+        .unwrap_or("en")
+        .to_string()
 }
 
 pub fn ask<T: Display + Clone>(items: Vec<T>, message: &str) -> T {
@@ -21,11 +26,21 @@ pub fn ask<T: Display + Clone>(items: Vec<T>, message: &str) -> T {
     loop {
         match create_prompt(items.clone(), message) {
             Ok(choice) => return choice,
-            Err(err) => {
-                match lang.as_str() {
-                    "ru" => eprintln!("Ошибка: {}. Попробуйте снова или нажмите Ctrl+C для выхода.", err),
-                    _     => eprintln!("Error: {}. Try again or use Ctrl+C to exit.", err),
+            Err(err) => match err {
+                InquireError::OperationCanceled | InquireError::OperationInterrupted => {
+                    match lang.as_str() {
+                        "ru" => eprintln!("\nВыход..."),
+                        _ => eprintln!("\nExiting..."),
+                    }
+                    process::exit(0);
                 }
+                _ => match lang.as_str() {
+                    "ru" => eprintln!(
+                        "Ошибка: {}. Попробуйте снова или нажмите Ctrl+C для выхода.",
+                        err
+                    ),
+                    _ => eprintln!("Error: {}. Try again or press Ctrl+C to exit.", err),
+                },
             },
         }
     }
