@@ -1,11 +1,11 @@
 mod archarchive;
 
+use crate::archarchive::menu::detect_language;
+use anyhow::Result;
+use archarchive::ArchArchive;
 use std::fs;
 use std::io::Write;
-use anyhow::{Result, anyhow};
 use tokio::process::Command;
-use archarchive::{ArchArchive, parser};
-use crate::archarchive::menu::detect_language;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -15,33 +15,45 @@ async fn main() -> Result<()> {
         Ok(url) => {
             println!("URL: {}", url);
 
-            println!("{}", match lang.as_str() {
-                "ru" => "Создаю резервную копию mirrorlist...",
-                _ => "Creating a mirrorlist backup...",
-            });
+            println!(
+                "{}",
+                match lang.as_str() {
+                    "ru" => "Создаю резервную копию mirrorlist...",
+                    _ => "Creating a mirrorlist backup...",
+                }
+            );
             fs::rename("/etc/pacman.d/mirrorlist", "/etc/pacman.d/mirrorlist.bak")?;
 
-            println!("{}", match lang.as_str() {
-                "ru" => "Записываю зеркало archarchive в mirrorlist...",
-                _ => "Writing an archarchive mirror to mirrorlist..."
-            });
+            println!(
+                "{}",
+                match lang.as_str() {
+                    "ru" => "Записываю зеркало archarchive в mirrorlist...",
+                    _ => "Writing an archarchive mirror to mirrorlist...",
+                }
+            );
             let mut file = fs::File::create("/etc/pacman.d/mirrorlist")?;
             file.write_all(format!("Server = {url}").as_bytes())?;
-            
-            println!("{}", match lang.as_str() {
-                "ru" => "Обновляю пакеты через pacman...",
-                _ => "Updating packages via pacman...",
-            });
+
+            println!(
+                "{}",
+                match lang.as_str() {
+                    "ru" => "Обновляю пакеты через pacman...",
+                    _ => "Updating packages via pacman...",
+                }
+            );
 
             Command::new("sudo")
                 .args(["pacman", "-Syyuu"])
                 .status()
                 .await?;
 
-            println!("{}", match lang.as_str() {
-                "ru" => "Восстанавливаю mirrorlist из резервной копии...",
-                _ => "Restoring a mirrorlist backup...",
-            });
+            println!(
+                "{}",
+                match lang.as_str() {
+                    "ru" => "Восстанавливаю mirrorlist из резервной копии...",
+                    _ => "Restoring a mirrorlist backup...",
+                }
+            );
             fs::remove_file("/etc/pacman.d/mirrorlist")?;
             fs::rename("/etc/pacman.d/mirrorlist.bak", "/etc/pacman.d/mirrorlist")?;
         }
